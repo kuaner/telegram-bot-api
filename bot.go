@@ -147,7 +147,20 @@ func (bot *BotAPI) makeMessageRequest(endpoint string, params url.Values) (Messa
 // the file into memory to calculate a size.
 func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldname string, file interface{}) (APIResponse, error) {
 	ms := multipartstreamer.New()
+	if thumb, ok := params["thumb"]; ok {
+		delete(params, "thumb")
+		fileHandle, err := os.Open(thumb)
+		if err != nil {
+			return APIResponse{}, err
+		}
 
+		fi, err := os.Stat(thumb)
+		if err != nil {
+			return APIResponse{}, err
+		}
+		ms.WriteReader("thumb", fileHandle.Name(), fi.Size(), fileHandle)
+		fileHandle.Close()
+	}
 	switch f := file.(type) {
 	case string:
 		ms.WriteFields(params)

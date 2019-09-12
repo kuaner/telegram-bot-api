@@ -297,6 +297,7 @@ type AudioConfig struct {
 	Duration  int
 	Performer string
 	Title     string
+	Thumb     string
 }
 
 // values returns a url.Values representation of AudioConfig.
@@ -323,7 +324,9 @@ func (config AudioConfig) values() (url.Values, error) {
 			v.Add("parse_mode", config.ParseMode)
 		}
 	}
-
+	if config.Thumb != "" {
+		v.Add("thumb", config.Thumb)
+	}
 	return v, nil
 }
 

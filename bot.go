@@ -153,13 +153,12 @@ func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldna
 		if err != nil {
 			return APIResponse{}, err
 		}
-
+		defer fileHandle.Close()
 		fi, err := os.Stat(thumb)
 		if err != nil {
 			return APIResponse{}, err
 		}
 		ms.WriteReader("thumb", fileHandle.Name(), fi.Size(), fileHandle)
-		fileHandle.Close()
 	}
 	switch f := file.(type) {
 	case string:
